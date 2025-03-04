@@ -2,7 +2,7 @@ import requests
 
 # Convert markdown text to HTML
 def convert_markdown(text):
-    url = "http://localhost:8000/api"
+    url = "https://md2html-026e9f635799.herokuapp.com/api"
     payload = {
         "markdown_text": text,
         "include_toc": False,
