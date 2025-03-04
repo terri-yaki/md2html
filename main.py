@@ -13,85 +13,6 @@ app = Flask(__name__,
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("static", exist_ok=True)
 
-# Create a simple CSS file for code highlighting
-with open("static/highlight.css", "w") as f:
-    f.write("""
-    .codehilite {
-        background-color: #f8f8f8;
-        padding: 1rem;
-        border-radius: 0.375rem;
-        overflow-x: auto;
-    }
-    .codehilite pre {
-        margin: 0;
-    }
-    .codehilite .hll { background-color: #ffffcc }
-    .codehilite .c { color: #408080; font-style: italic } /* Comment */
-    .codehilite .k { color: #008000; font-weight: bold } /* Keyword */
-    .codehilite .o { color: #666666 } /* Operator */
-    .codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-    .codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
-    .codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
-    .codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
-    .codehilite .gd { color: #A00000 } /* Generic.Deleted */
-    .codehilite .ge { font-style: italic } /* Generic.Emph */
-    .codehilite .gr { color: #FF0000 } /* Generic.Error */
-    .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-    .codehilite .gi { color: #00A000 } /* Generic.Inserted */
-    .codehilite .go { color: #888888 } /* Generic.Output */
-    .codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-    .codehilite .gs { font-weight: bold } /* Generic.Strong */
-    .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-    .codehilite .gt { color: #0044DD } /* Generic.Traceback */
-    .codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-    .codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-    .codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-    .codehilite .kp { color: #008000 } /* Keyword.Pseudo */
-    .codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-    .codehilite .kt { color: #B00040 } /* Keyword.Type */
-    .codehilite .m { color: #666666 } /* Literal.Number */
-    .codehilite .s { color: #BA2121 } /* Literal.String */
-    .codehilite .na { color: #7D9029 } /* Name.Attribute */
-    .codehilite .nb { color: #008000 } /* Name.Builtin */
-    .codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-    .codehilite .no { color: #880000 } /* Name.Constant */
-    .codehilite .nd { color: #AA22FF } /* Name.Decorator */
-    .codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
-    .codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-    .codehilite .nf { color: #0000FF } /* Name.Function */
-    .codehilite .nl { color: #A0A000 } /* Name.Label */
-    .codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-    .codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
-    .codehilite .nv { color: #19177C } /* Name.Variable */
-    .codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-    .codehilite .w { color: #bbbbbb } /* Text.Whitespace */
-    .codehilite .mb { color: #666666 } /* Literal.Number.Bin */
-    .codehilite .mf { color: #666666 } /* Literal.Number.Float */
-    .codehilite .mh { color: #666666 } /* Literal.Number.Hex */
-    .codehilite .mi { color: #666666 } /* Literal.Number.Integer */
-    .codehilite .mo { color: #666666 } /* Literal.Number.Oct */
-    .codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
-    .codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
-    .codehilite .sc { color: #BA2121 } /* Literal.String.Char */
-    .codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
-    .codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-    .codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
-    .codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-    .codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
-    .codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-    .codehilite .sx { color: #008000 } /* Literal.String.Other */
-    .codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
-    .codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
-    .codehilite .ss { color: #19177C } /* Literal.String.Symbol */
-    .codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
-    .codehilite .fm { color: #0000FF } /* Name.Function.Magic */
-    .codehilite .vc { color: #19177C } /* Name.Variable.Class */
-    .codehilite .vg { color: #19177C } /* Name.Variable.Global */
-    .codehilite .vi { color: #19177C } /* Name.Variable.Instance */
-    .codehilite .vm { color: #19177C } /* Name.Variable.Magic */
-    .codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
-    """)
-
 @app.route('/')
 def home():
     """Render the home page"""
@@ -125,7 +46,7 @@ def convert_text():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/convert/file', methods=['POST'])
+@app.route('/api/file', methods=['POST'])
 def convert_file():
     """Convert markdown file to HTML"""
     try:
@@ -174,98 +95,65 @@ def convert_file():
 
 def convert_markdown_to_html(
     markdown_text,
-    include_toc=False,
+    bare_output=True,
     github_flavored=True,
     syntax_highlighting=True,
     math_support=True,
     custom_css="",
     extra_extensions=None,
+    include_toc=False,
     full_page=False
 ):
-    """
-    Convert Markdown text to HTML with support for:
-      - Headings, paragraphs, emphasis, and inline code.
-      - Links, images.
-      - Unordered/ordered lists and task lists.
-      - Blockquotes and nested blockquotes.
-      - Fenced code blocks (with codehilite) that are wrapped only once.
-      - Tables and horizontal rules.
-      - Inline HTML.
-      - Footnotes, admonitions, attribute lists, and definition lists.
-      - Math expressions using $...$ (inline) and $$...$$ (display), rendered via MathJax.
-      - Custom CSS and metadata.
-      - All extra block elements.
-      
-    Parameters:
-      markdown_text (str): The Markdown content.
-      include_toc (bool): If True, include a table of contents.
-      github_flavored (bool): If True, add the 'extra' extension for GitHub-flavored Markdown.
-      syntax_highlighting (bool): If True, enable code highlighting using codehilite.
-      math_support (bool): If True, enable math support using python-markdown-math.
-      custom_css (str): Additional CSS to inject.
-      extra_extensions (list): Extra Markdown extensions to include.
-      full_page (bool): If True, returns a complete HTML document; otherwise, returns an HTML fragment.
-      
-    Returns:
-      str: The final HTML.
-    """
     import markdown
 
-    # Base extensions for a broad set of features.
+    # Base set of extensions
     extensions = [
-        'fenced_code',    # For code fences.
-        'tables',         # Table support.
-        'attr_list',      # Allow attribute lists.
-        'admonition',     # For admonition blocks.
-        'footnotes',      # For footnotes.
-        'meta',           # Metadata.
-        'sane_lists',     # Better list handling.
-        'def_list'        # Definition lists.
+        'fenced_code',
+        'tables',
+        'attr_list',
+        'admonition',
+        'footnotes',
+        'meta',
+        'sane_lists',
+        'def_list'
     ]
     extension_configs = {}
 
-    # GitHub-flavored Markdown: 'extra' bundles many features.
-    if github_flavored:
-        if 'extra' not in extensions:
-            extensions.append('extra')
-    else:
-        if 'extra' in extensions:
-            extensions.remove('extra')
+    # GitHub-flavored
+    if github_flavored and 'extra' not in extensions:
+        extensions.append('extra')
 
-    # Enable syntax highlighting.
-    if syntax_highlighting:
-        if 'codehilite' not in extensions:
-            extensions.append('codehilite')
+    # Syntax highlighting
+    if syntax_highlighting and 'codehilite' not in extensions:
+        extensions.append('codehilite')
         extension_configs['codehilite'] = {
             'css_class': 'codehilite',
             'linenums': False,
             'guess_lang': False
         }
-    
-    # Include TOC if requested.
-    if include_toc:
-        if 'toc' not in extensions:
-            extensions.append('toc')
+
+    # TOC
+    if include_toc and 'toc' not in extensions:
+        extensions.append('toc')
         extension_configs['toc'] = {
             'title': 'Table of Contents',
             'permalink': True
         }
 
-    # Enable math support.
-    if math_support:
-        if 'mdx_math' not in extensions:
-            extensions.append('mdx_math')
+    # Math
+    if math_support and 'mdx_math' not in extensions:
+        extensions.append('mdx_math')
         extension_configs['mdx_math'] = {
-            'enable_dollar_delimiter': True  # Allow both inline ($...$) and display ($$...$$) math.
+            'enable_dollar_delimiter': True
         }
 
-    # Append any extra extensions.
+    # Extra extensions
     if extra_extensions:
         for ext in extra_extensions:
             if ext not in extensions:
                 extensions.append(ext)
 
-    # Convert the Markdown to HTML.
+    # Convert markdown to HTML
     html_body = markdown.markdown(
         markdown_text,
         extensions=extensions,
@@ -273,7 +161,11 @@ def convert_markdown_to_html(
         output_format='html5'
     )
 
-    # Base CSS styles for the preview document.
+    # If bare_output is True, just return the user’s raw HTML body
+    if bare_output:
+        return html_body
+
+    # Otherwise, proceed with your usual styling logic
     base_styles = """
       body {
         margin: 0;
@@ -351,39 +243,13 @@ def convert_markdown_to_html(
         margin: 1em 0;
       }
     """
-    # Append custom CSS if provided.
-    if custom_css:
-        base_styles += custom_css
 
-    # Include MathJax if math support is enabled and we're returning a full document.
-    mathjax_script = ""
-    if math_support and full_page:
-        mathjax_script = (
-            '<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" '
-            'integrity="sha512-6cjeKuL8NKM4U0Wm8v3O0B3WPhjEjdwbFcPUkR+hvJH/7Yum1pdI+tPmL4paAs/nuoM7U6VIRUzBiDwxu5RJsg==" '
-            'crossorigin="anonymous"></script>'
-        )
-
-    # Build final HTML.
     if full_page:
-        final_html = (
-            "<!DOCTYPE html>\n"
-            "<html lang='en'>\n"
-            "<head>\n"
-            "    <meta charset='UTF-8'>\n"
-            "    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n"
-            "    <title>Converted Markdown</title>\n"
-            f"    <link rel='stylesheet' href='/static/highlight.css'>\n"
-            f"    <style>{base_styles}</style>\n"
-            f"    {mathjax_script}\n"
-            "</head>\n"
-            "<body>\n"
-            f"    {html_body}\n"
-            "</body>\n"
-            "</html>"
-        )
+        # Wrap in full HTML doc with styles
+        final_html = f"<!DOCTYPE html><html> ... {html_body} ...</html>"
     else:
-        final_html = f"<style>{base_styles}</style>\n" + html_body;
+        # Return a fragment with embedded <style>
+        final_html = f"<style>{base_styles}</style>\n{html_body}"
 
     return final_html
 

@@ -123,27 +123,33 @@
 
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-semibold mb-4">API Usage</h2>
-            <p class="mb-2">MD2HTML provides a simple API for converting Markdown to HTML:</p>
-            <div class="bg-gray-100 p-4 rounded-md mb-4">
-                <code class="text-sm">
-                    POST /api<br>
-                    Content-Type: application/json<br><br>
-                    {<br>
-                    &nbsp;&nbsp;"markdown_text": "# Hello World",<br>
-                    &nbsp;&nbsp;"include_toc": false,<br>
-                    &nbsp;&nbsp;"github_flavored": true,<br>
-                    &nbsp;&nbsp;"syntax_highlighting": true<br>
-                    }
-                </code>
-            </div>
-            <p>For more details, check out the <a href="/api/docs" class="text-indigo-600 hover:text-indigo-800">API documentation</a>.</p>
-        </div>
+            <p class="mb-2">
+              MD2HTML provides a simple API for converting Markdown to HTML. Send a POST request with a JSON body like this:
+            </p>
+            <pre class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto text-sm">
+POST /api
+Content-Type: application/json
+
+{
+    "markdown_text": "# Hello World",
+    "include_toc": false,
+    "github_flavored": true,
+    "syntax_highlighting": true
+}
+            </pre>
+            <p>
+              For more details, check out the 
+              <a href="/api/docs" class="text-indigo-600 hover:text-indigo-800">API documentation</a>.
+            </p>
+          </div>
+   
+          
     </div>
 
     <footer class="bg-gray-800 text-white py-6 mt-8">
         <div class="container mx-auto px-4 text-center">
             <p>MD2HTML</p>
-            <p class="text-gray-400 text-sm mt-2">© 2025 MD2HTML</p>
+            <p class="text-gray-400 text-sm mt-2">© 2025 @terri-yaki</p>
         </div>
     </footer>
 
@@ -347,7 +353,7 @@
                 const formData = new FormData(fileUploadForm);
                 
                 try {
-                    const response = await fetch('/convert/file', {
+                    const response = await fetch('/api/file', {
                         method: 'POST',
                         body: formData,
                     });
