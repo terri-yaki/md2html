@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD2HTML - Markdown to HTML Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="/static/highlight.css" rel="stylesheet">
+    <style>
+        .preview {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            background-color: white;
+        }
+        .preview img {
+            max-width: 100%;
+        }
+        .preview table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .preview th, .preview td {
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+        }
+        .preview blockquote {
+            border-left: 4px solid #e2e8f0;
+            padding-left: 1rem;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-600">MD2HTML</h1>
+            <p class="text-xl text-gray-600">Convert Markdown to HTML with ease</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="mb-4">
+                <h2 class="text-2xl font-semibold mb-2">Convert Markdown</h2>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="markdown-input" class="block text-sm font-medium text-gray-700 mb-1">Markdown Input</label>
+                        <textarea id="markdown-input" class="w-full h-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter your Markdown here..."></textarea>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">HTML Preview</label>
+                        <iframe id="html-preview" class="preview h-64 overflow-auto w-full border" sandbox="allow-same-origin"></iframe>
+                      </div>                      
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-4">
+                <div class="flex items-center">
+                    <input type="checkbox" id="include-toc" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="include-toc" class="ml-2 block text-sm text-gray-700">Include Table of Contents</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="github-flavored" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                    <label for="github-flavored" class="ml-2 block text-sm text-gray-700">GitHub Flavored Markdown</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="syntax-highlighting" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                    <label for="syntax-highlighting" class="ml-2 block text-sm text-gray-700">Syntax Highlighting</label>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4">
+                <button id="convert-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Convert to HTML
+                </button>
+                <button id="copy-html-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Copy HTML
+                </button>
+                <button id="clear-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Upload Markdown File</h2>
+            <form id="file-upload-form" class="space-y-4">
+                <div>
+                    <label for="markdown-file" class="block text-sm font-medium text-gray-700 mb-1">Select Markdown File</label>
+                    <input type="file" id="markdown-file" name="file" accept=".md,.markdown" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="file-include-toc" name="include_toc" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="file-include-toc" class="ml-2 block text-sm text-gray-700">Include Table of Contents</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="file-github-flavored" name="github_flavored" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                        <label for="file-github-flavored" class="ml-2 block text-sm text-gray-700">GitHub Flavored Markdown</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="file-syntax-highlighting" name="syntax_highlighting" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                        <label for="file-syntax-highlighting" class="ml-2 block text-sm text-gray-700">Syntax Highlighting</label>
+                    </div>
+                </div>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Upload & Convert
+                </button>
+            </form>
+            <div id="file-result" class="mt-4 hidden">
+                <h3 class="text-lg font-medium mb-2">Conversion Result</h3>
+                <div id="file-html-preview" class="preview p-4 border border-gray-300 rounded-md"></div>
+                <div class="mt-4">
+                    <button id="copy-file-html-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Copy HTML
+                    </button>
+                    <button id="download-html-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2">
+                        Download HTML
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold mb-4">API Usage</h2>
+            <p class="mb-2">MD2HTML provides a simple API for converting Markdown to HTML:</p>
+            <div class="bg-gray-100 p-4 rounded-md mb-4">
+                <code class="text-sm">
+                    POST /api<br>
+                    Content-Type: application/json<br><br>
+                    {<br>
+                    &nbsp;&nbsp;"markdown_text": "# Hello World",<br>
+                    &nbsp;&nbsp;"include_toc": false,<br>
+                    &nbsp;&nbsp;"github_flavored": true,<br>
+                    &nbsp;&nbsp;"syntax_highlighting": true<br>
+                    }
+                </code>
+            </div>
+            <p>For more details, check out the <a href="/api/docs" class="text-indigo-600 hover:text-indigo-800">API documentation</a>.</p>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>MD2HTML</p>
+            <p class="text-gray-400 text-sm mt-2">© 2025 MD2HTML</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const markdownInput = document.getElementById('markdown-input');
+            const htmlPreview = document.getElementById('html-preview');
+            const convertBtn = document.getElementById('convert-btn');
+            const copyHtmlBtn = document.getElementById('copy-html-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const fileUploadForm = document.getElementById('file-upload-form');
+            const fileResult = document.getElementById('file-result');
+            const fileHtmlPreview = document.getElementById('file-html-preview');
+            const copyFileHtmlBtn = document.getElementById('copy-file-html-btn');
+            const downloadHtmlBtn = document.getElementById('download-html-btn');
+
+            let currentHtml = '';
+            let fileHtml = '';
+
+            // Convert markdown text to HTML
+            async function convertMarkdown() {
+                const markdown = markdownInput.value;
+                const previewContainer = document.getElementById('html-preview');
+            
+                // If no markdown is provided, display a placeholder
+                if (!markdown) {
+                    if (previewContainer.tagName.toLowerCase() === 'iframe') {
+                        previewContainer.contentDocument.open();
+                        previewContainer.contentDocument.write('<p class="text-gray-500">HTML preview will appear here...</p>');
+                        previewContainer.contentDocument.close();
+                    } else {
+                        previewContainer.innerHTML = '<p class="text-gray-500">HTML preview will appear here...</p>';
+                    }
+                    currentHtml = '';
+                    return;
+                }
+            
+                try {
+                    const response = await fetch('/api', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            markdown_text: markdown,
+                            include_toc: document.getElementById('include-toc').checked,
+                            github_flavored: document.getElementById('github-flavored').checked,
+                            syntax_highlighting: document.getElementById('syntax-highlighting').checked
+                        }),
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+            
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+            
+                    if (data && data.html) {
+                        currentHtml = data.html;
+                        if (previewContainer.tagName.toLowerCase() === 'iframe') {
+                            // Write a complete HTML document into the iframe, including styles for blockquotes
+                            previewContainer.contentDocument.open();
+                            previewContainer.contentDocument.write(`<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="stylesheet" href="/static/highlight.css">
+                <style>
+                  /* Base styles */
+                  body {
+                    margin: 0;
+                    font-family: sans-serif;
+                    padding: 1em;
+                  }
+                  h1, h2, h3, h4, h5, h6 {
+                    margin: 0.5em 0;
+                  }
+                  pre {
+                    background-color: #f3f3f3;
+                    padding: 1em;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    overflow-x: auto;
+                  }
+                  code {
+                    font-family: monospace;
+                  }
+                  /* Inline code styling */
+                  p code, li code, span code {
+                    background: #eee;
+                    padding: 0.1em 0.3em;
+                    border-radius: 3px;
+                    font-size: 0.95em;
+                  }
+                  /* Table styling */
+                  table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 1em 0;
+                  }
+                  th, td {
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                  }
+                  th {
+                    background-color: #f5f5f5;
+                  }
+                  /* CodeHilite styling for code blocks */
+                  .codehilite {
+                    background: #f8f8f8;
+                    border: 1px solid #ccc;
+                    padding: 0.5em;
+                    overflow-x: auto;
+                    font-size: 0.9em;
+                  }
+                  .codehilite code {
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    font-size: inherit;
+                    color: inherit;
+                  }
+                  /* Blockquote styling for proper rendering */
+                  blockquote {
+                    border-left: 4px solid #ccc;
+                    margin: 1em 0;
+                    padding-left: 1em;
+                    color: #555;
+                    font-style: italic;
+                    background: #f9f9f9;
+                  }
+                </style>
+              </head>
+              <body>
+                ${currentHtml}
+              </body>
+            </html>`);
+                            previewContainer.contentDocument.close();
+                        } else {
+                            previewContainer.innerHTML = currentHtml;
+                        }
+                    } else {
+                        throw new Error('Invalid response format');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    if (previewContainer.tagName.toLowerCase() === 'iframe') {
+                        previewContainer.contentDocument.open();
+                        previewContainer.contentDocument.write(`<p class="text-red-500">Error converting markdown: ${error.message}</p>`);
+                        previewContainer.contentDocument.close();
+                    } else {
+                        previewContainer.innerHTML = `<p class="text-red-500">Error converting markdown: ${error.message}</p>`;
+                    }
+                    currentHtml = '';
+                }
+            }
+         
+            
+
+            // Copy HTML to clipboard
+            async function copyHtml(html) {
+                try {
+                    await navigator.clipboard.writeText(html);
+                    alert('HTML copied to clipboard!');
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy HTML. Please try again.');
+                }
+            }
+
+            // Event listeners
+            convertBtn.addEventListener('click', convertMarkdown);
+            
+            copyHtmlBtn.addEventListener('click', () => {
+                if (currentHtml) {
+                    copyHtml(currentHtml);
+                } else {
+                    alert('Please convert markdown to HTML first.');
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                markdownInput.value = '';
+                htmlPreview.innerHTML = '<p class="text-gray-500">HTML preview will appear here...</p>';
+                currentHtml = '';
+            });
+
+            // Auto-convert as you type (with debounce)
+            let debounceTimer;
+            markdownInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(convertMarkdown, 500);
+            });
+
+            // File upload form
+            fileUploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(fileUploadForm);
+                
+                try {
+                    const response = await fetch('/convert/file', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    if (data && data.html) {
+                        fileHtml = data.html;
+                        fileHtmlPreview.innerHTML = fileHtml;
+                        fileResult.classList.remove('hidden');
+                    } else {
+                        throw new Error('Invalid response format');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error converting file: ' + error.message);
+                }
+            });
+
+            copyFileHtmlBtn.addEventListener('click', () => {
+                if (fileHtml) {
+                    copyHtml(fileHtml);
+                } else {
+                    alert('Please convert a file first.');
+                }
+            });
+
+            downloadHtmlBtn.addEventListener('click', () => {
+                if (fileHtml) {
+                    const blob = new Blob([fileHtml], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'converted.html';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } else {
+                    alert('Please convert a file first.');
+                }
+            });
+
+            // Initialize with sample markdown
+            markdownInput.value = `
+# Welcome to MD2HTML
+
+This is a **Markdown to HTML** converter.
+
+## Features
+- Convert Markdown to HTML
+- GitHub Flavored Markdown support
+- Code syntax highlighting
+- Table of contents generation
+
+## Code Example
+\`\`\`python
+def hello_world():
+print("Hello, World!")
+\`\`\`
+
+## Table Example
+| Name | Description |
+|------|-------------|
+| MD2HTML | Markdown to HTML converter |
+| Flask | Lightweight web framework |
+
+> Try it out by editing this text or uploading your own Markdown file!
+`;
+            convertMarkdown();
+        });
+    </script>
+</body>
+</html>

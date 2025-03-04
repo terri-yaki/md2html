@@ -1,0 +1,73 @@
+# ------------------------
+# Python Bytecode & Cache
+# ------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# -------------
+# Virtual Envs
+# -------------
+env/
+venv/
+.venv/
+ENV/
+.ENV/
+env.bak/
+venv.bak/
+
+# ------------------------
+# Distribution / Packaging
+# ------------------------
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ---------------
+# Installer Logs
+# ---------------
+pip-log.txt
+pip-delete-this-directory.txt
+
+# -----------------
+# PyInstaller Stuff
+# -----------------
+*.manifest
+*.spec
+
+# ----------------
+# Unit Test / Coverage
+# ----------------
+.coverage
+.tox/
+.nox/
+.hypothesis/
+
+# -----------------------
+# Environments & Editors
+# -----------------------
+*.env
+*.venv
+*.virtualenv
+.ipynb_checkpoints
+.vscode/
+.idea/
+*.swp
+
+# ----------------------------------
+# OS-Specific or Miscellaneous Files
+# ----------------------------------
+.DS_Store
+Thumbs.db
+
+# -----------
+# Uploads
+# -----------
+uploads/
+
+# -----------
+# Logs
+# -----------
+*.log
