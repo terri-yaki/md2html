@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MD2HTML API Documentation</title>
+    <title>MD2HTML API Doc</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-indigo-600">MD2HTML API Documentation</h1>
-            <p class="text-xl text-gray-600">Learn how to use the MD2HTML API</p>
+            <p class="text-xl text-gray-600">Should be simple</p>
             <a href="/" class="inline-block mt-2 text-indigo-600 hover:text-indigo-800">← Back to Converter</a>
         </header>
 
@@ -33,6 +33,7 @@
                 <h4 class="font-semibold mt-3 mb-1">Response:</h4>
                 <pre class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto">
 {
+    "file_id": "550e8400-e29b-41d4-a716-446655440000",
     "html": "&lt;h1&gt;Hello World&lt;/h1&gt;&lt;p&gt;This is &lt;strong&gt;bold&lt;/strong&gt; text.&lt;/p&gt;"
 }</pre>
               </div>
@@ -78,14 +79,7 @@
             
             <div class="mb-8">
                 <h3 class="text-xl font-medium mb-2">Convert Markdown File</h3>
-                <div class="bg-gray-100 p-4 rounded-md mb-4">
-                  <p class="font-mono text-sm mb-2">POST /api/file</p>
-                  <p class="mb-2">Convert a Markdown file to HTML by uploading the file. The endpoint accepts multipart/form-data.</p>
-                  <h4 class="font-semibold mb-1">Request Headers:</h4>
-                  <p class="mb-2">Content-Type: multipart/form-data</p>
-                  <h4 class="font-semibold mt-3 mb-1">Request Body Example:</h4>
                   <div class="mb-8">
-                    <h3 class="text-xl font-medium mb-2">Convert Markdown File</h3>
                     <div class="bg-gray-100 p-4 rounded-md mb-4">
                       <p class="font-mono text-sm mb-2">POST /api/file</p>
                       <p class="mb-2">Convert a Markdown file to HTML by uploading the file using multipart/form-data.</p>

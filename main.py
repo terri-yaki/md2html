@@ -3,6 +3,7 @@ import markdown
 import os
 import uuid
 from asgiref.wsgi import WsgiToAsgi
+from flask_talisman import Talisman
 
 app = Flask(__name__, 
     static_folder='static',
@@ -15,7 +16,6 @@ os.makedirs("static", exist_ok=True)
 
 @app.route('/')
 def home():
-    """Render the home page"""
     return render_template('index.html')
 
 @app.route('/api', methods=['POST'])
@@ -48,7 +48,6 @@ def convert_text():
 
 @app.route('/api/file', methods=['POST'])
 def convert_file():
-    """Convert markdown file to HTML"""
     try:
         if 'file' not in request.files:
             return jsonify({"error": "No file part"}), 400
@@ -237,11 +236,17 @@ def convert_markdown_to_html(
       }
       /* Admonition styling (if used) */
       .admonition {
-        border-left: 4px solid #e74c3c;
-        padding: 0.5em;
-        background: #fdf2f2;
-        margin: 1em 0;
-      }
+					border-left: 4px solid #e74c3c;
+					background-color: #fdf2f2;
+					padding: 0.75em 1em;
+					margin: 1em 0;
+					font-style: italic;
+        }
+        .admonition h4 {
+					margin-top: 0;
+					font-weight: bold;
+        }
+
     """
 
     if full_page:

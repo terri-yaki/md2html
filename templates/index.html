@@ -30,6 +30,17 @@
             padding-left: 1rem;
             color: #4a5568;
         }
+        .admonition {
+            border-left: 4px solid #e74c3c;
+            background-color: #fdf2f2;
+            padding: 0.75em 1em;
+            margin: 1em 0;
+            font-style: italic;
+        }
+        .admonition h4 {
+            margin-top: 0;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -171,144 +182,213 @@ Content-Type: application/json
 
             // Convert markdown text to HTML
             async function convertMarkdown() {
-                const markdown = markdownInput.value;
-                const previewContainer = document.getElementById('html-preview');
-            
-                // If no markdown is provided, display a placeholder
-                if (!markdown) {
-                    if (previewContainer.tagName.toLowerCase() === 'iframe') {
-                        previewContainer.contentDocument.open();
-                        previewContainer.contentDocument.write('<p class="text-gray-500">HTML preview will appear here...</p>');
-                        previewContainer.contentDocument.close();
-                    } else {
-                        previewContainer.innerHTML = '<p class="text-gray-500">HTML preview will appear here...</p>';
-                    }
-                    currentHtml = '';
-                    return;
-                }
-            
-                try {
-                    const response = await fetch('/api', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            markdown_text: markdown,
-                            include_toc: document.getElementById('include-toc').checked,
-                            github_flavored: document.getElementById('github-flavored').checked,
-                            syntax_highlighting: document.getElementById('syntax-highlighting').checked
-                        }),
-                    });
-            
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-            
-                    const data = await response.json();
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-            
-                    if (data && data.html) {
-                        currentHtml = data.html;
-                        if (previewContainer.tagName.toLowerCase() === 'iframe') {
-                            // Write a complete HTML document into the iframe, including styles for blockquotes
-                            previewContainer.contentDocument.open();
-                            previewContainer.contentDocument.write(`<!DOCTYPE html>
-            <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="stylesheet" href="/static/highlight.css">
-                <style>
-                  /* Base styles */
-                  body {
-                    margin: 0;
-                    font-family: sans-serif;
-                    padding: 1em;
-                  }
-                  h1, h2, h3, h4, h5, h6 {
-                    margin: 0.5em 0;
-                  }
-                  pre {
-                    background-color: #f3f3f3;
-                    padding: 1em;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    overflow-x: auto;
-                  }
-                  code {
-                    font-family: monospace;
-                  }
-                  /* Inline code styling */
-                  p code, li code, span code {
-                    background: #eee;
-                    padding: 0.1em 0.3em;
-                    border-radius: 3px;
-                    font-size: 0.95em;
-                  }
-                  /* Table styling */
-                  table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 1em 0;
-                  }
-                  th, td {
-                    border: 1px solid #ccc;
-                    padding: 8px;
-                  }
-                  th {
-                    background-color: #f5f5f5;
-                  }
-                  /* CodeHilite styling for code blocks */
-                  .codehilite {
-                    background: #f8f8f8;
-                    border: 1px solid #ccc;
-                    padding: 0.5em;
-                    overflow-x: auto;
-                    font-size: 0.9em;
-                  }
-                  .codehilite code {
-                    background: none;
-                    border: none;
-                    padding: 0;
-                    font-size: inherit;
-                    color: inherit;
-                  }
-                  /* Blockquote styling for proper rendering */
-                  blockquote {
-                    border-left: 4px solid #ccc;
-                    margin: 1em 0;
-                    padding-left: 1em;
-                    color: #555;
-                    font-style: italic;
-                    background: #f9f9f9;
-                  }
-                </style>
-              </head>
-              <body>
-                ${currentHtml}
-              </body>
-            </html>`);
-                            previewContainer.contentDocument.close();
-                        } else {
-                            previewContainer.innerHTML = currentHtml;
-                        }
-                    } else {
-                        throw new Error('Invalid response format');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    if (previewContainer.tagName.toLowerCase() === 'iframe') {
-                        previewContainer.contentDocument.open();
-                        previewContainer.contentDocument.write(`<p class="text-red-500">Error converting markdown: ${error.message}</p>`);
-                        previewContainer.contentDocument.close();
-                    } else {
-                        previewContainer.innerHTML = `<p class="text-red-500">Error converting markdown: ${error.message}</p>`;
-                    }
-                    currentHtml = '';
-                }
-            }
-         
+							const markdown = markdownInput.value;
+							const previewContainer = document.getElementById('html-preview');
+						
+							// If no markdown is provided, display a placeholder
+							if (!markdown) {
+								if (previewContainer.tagName.toLowerCase() === 'iframe') {
+									previewContainer.contentDocument.open();
+									previewContainer.contentDocument.write('<p class="text-gray-500">HTML preview will appear here...</p>');
+									previewContainer.contentDocument.close();
+								} else {
+									previewContainer.innerHTML = '<p class="text-gray-500">HTML preview will appear here...</p>';
+								}
+								currentHtml = '';
+								return;
+							}
+						
+							try {
+								const response = await fetch('/api', {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({
+										markdown_text: markdown,
+										include_toc: document.getElementById('include-toc').checked,
+										github_flavored: document.getElementById('github-flavored').checked,
+										syntax_highlighting: document.getElementById('syntax-highlighting').checked
+									}),
+								});
+						
+								if (!response.ok) {
+									throw new Error(`HTTP error! status: ${response.status}`);
+								}
+						
+								const data = await response.json();
+								if (data.error) {
+									throw new Error(data.error);
+								}
+						
+								if (data && data.html) {
+									currentHtml = data.html;
+									if (previewContainer.tagName.toLowerCase() === 'iframe') {
+										previewContainer.contentDocument.open();
+										previewContainer.contentDocument.write(`<!DOCTYPE html>
+						<html lang="en">
+							<head>
+								<meta charset="UTF-8">
+								<meta name="viewport" content="width=device-width, initial-scale=1.0">
+								<link rel="stylesheet" href="/static/highlight.css">
+								<style>
+									/* Base styles */
+									body {
+										margin: 0;
+										font-family: sans-serif;
+										padding: 1em;
+										background: #ffffff;
+									}
+									h1, h2, h3, h4, h5, h6 {
+										margin: 0.5em 0;
+									}
+									p {
+										margin: 0.5em 0;
+										line-height: 1.5;
+									}
+									/* Inline code styling */
+									code {
+										font-family: monospace;
+										background: #eee;
+										padding: 0.1em 0.3em;
+										border-radius: 3px;
+									}
+									/* Code blocks */
+									pre {
+										background-color: #f3f3f3;
+										padding: 1em;
+										border: 1px solid #ddd;
+										border-radius: 4px;
+										overflow-x: auto;
+										white-space: pre-wrap;
+										margin: 0.5em 0;
+									}
+									/* CodeHilite styling */
+									.codehilite {
+										background: #f8f8f8;
+										border: 1px solid #ccc;
+										padding: 0.5em;
+										overflow-x: auto;
+										font-size: 0.9em;
+										margin: 0.5em 0;
+									}
+									.codehilite code {
+										background: none;
+										border: none;
+										padding: 0;
+										font-size: inherit;
+										color: inherit;
+									}
+									/* Links */
+									a {
+										color: #2563eb;
+										text-decoration: underline;
+									}
+									a:hover {
+										color: #1d4ed8;
+									}
+									/* Images */
+									img {
+										max-width: 100%;
+										height: auto;
+									}
+									/* Lists */
+									ul, ol {
+										margin: 0.5em 1em;
+										padding-left: 1.5em;
+									}
+									/* Task list checkboxes */
+									input[type="checkbox"] {
+										margin-right: 0.5em;
+									}
+									/* Blockquotes */
+									blockquote {
+										border-left: 4px solid #ccc;
+										margin: 1em 0;
+										padding-left: 1em;
+										color: #555;
+										font-style: italic;
+										background: #f9f9f9;
+									}
+									/* Horizontal rule */
+									hr {
+										border: 0;
+										border-top: 1px solid #ccc;
+										margin: 1em 0;
+									}
+									/* Tables */
+									table {
+										width: 100%;
+										border-collapse: collapse;
+										margin: 1em 0;
+									}
+									th, td {
+										border: 1px solid #ccc;
+										padding: 8px;
+									}
+									th {
+										background-color: #f5f5f5;
+									}
+									/* Footnotes */
+									.footnotes {
+										font-size: 0.9em;
+										border-top: 1px solid #ccc;
+										margin-top: 1em;
+									}
+									.footnotes li {
+										margin-bottom: 0.5em;
+									}
+									/* Admonitions */
+									.admonition {
+										border-left: 4px solid #e74c3c;
+										background: #fdf2f2;
+										padding: 0.75em 1em;
+										margin: 1em 0;
+										font-style: italic;
+									}
+									.admonition .admonition-title {
+										margin: 0;
+										font-weight: bold;
+									}
+									/* Definition lists */
+									dl {
+										margin: 1em 0;
+									}
+									dt {
+										font-weight: bold;
+									}
+									dd {
+										margin-left: 1em;
+										margin-bottom: 0.5em;
+									}
+									/* Nested elements */
+									.nested-list {
+										margin-left: 1.5em;
+									}
+								</style>
+							</head>
+							<body>
+								${currentHtml}
+							</body>
+						</html>`);
+										previewContainer.contentDocument.close();
+									} else {
+										previewContainer.innerHTML = currentHtml;
+									}
+								} else {
+									throw new Error('Invalid response format');
+								}
+							} catch (error) {
+								console.error('Error:', error);
+								if (previewContainer.tagName.toLowerCase() === 'iframe') {
+									previewContainer.contentDocument.open();
+									previewContainer.contentDocument.write(`<p class="text-red-500">Error converting markdown: ${error.message}</p>`);
+									previewContainer.contentDocument.close();
+								} else {
+									previewContainer.innerHTML = `<p class="text-red-500">Error converting markdown: ${error.message}</p>`;
+								}
+								currentHtml = '';
+							}
+						}						
+
             
 
             // Copy HTML to clipboard
