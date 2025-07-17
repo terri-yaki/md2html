@@ -1,0 +1,22 @@
+# Cloudflare Workers configuration for MD2HTML API
+# Enhanced by terriyaki for production deployment
+
+name = "md2html-api"
+compatibility_date = "2024-01-01"
+main = "worker.js"
+
+[env.production]
+name = "md2html-api"
+
+[env.staging]
+name = "md2html-api-staging"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+MAX_FILE_SIZE = "1048576"  # 1MB in bytes
+
+# Rules for module format
+[[rules]]
+type = "ESModule"
+globs = ["**/*.js"]

@@ -1,0 +1,321 @@
+/* MD2HTML Frontend Styles - Enhanced for Cloudflare Pages */
+
+.preview {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    background-color: white;
+}
+
+.preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+}
+
+.preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.preview th, .preview td {
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.preview th {
+    background-color: #f8fafc;
+    font-weight: 600;
+}
+
+.preview blockquote {
+    border-left: 4px solid #e2e8f0;
+    padding-left: 1rem;
+    color: #4a5568;
+    background: #f7fafc;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.preview pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.preview code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.875em;
+}
+
+.preview p code,
+.preview li code,
+.preview span code {
+    background: #f3f4f6;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    color: #1f2937;
+}
+
+.preview pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+/* Enhanced admonition styling */
+.preview .admonition {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    padding: 0.75em 1em;
+    margin: 1em 0;
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.preview .admonition.warning {
+    border-left-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.preview .admonition.error {
+    border-left-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.preview .admonition h4 {
+    margin-top: 0;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+/* Table of Contents styling */
+.preview .toc {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.preview .toc h4 {
+    margin-top: 0;
+    color: #374151;
+    font-size: 1.125rem;
+}
+
+.preview .toc ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.preview .toc a {
+    color: #4b5563;
+    text-decoration: none;
+}
+
+.preview .toc a:hover {
+    color: #1f2937;
+    text-decoration: underline;
+}
+
+/* Enhanced link styling */
+.preview a {
+    color: #2563eb;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.2s;
+}
+
+.preview a:hover {
+    border-bottom-color: #2563eb;
+}
+
+/* Task list styling */
+.preview input[type="checkbox"] {
+    margin-right: 0.5rem;
+    transform: scale(1.1);
+}
+
+/* Enhanced heading styling */
+.preview h1,
+.preview h2,
+.preview h3,
+.preview h4,
+.preview h5,
+.preview h6 {
+    color: #1f2937;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.preview h1 {
+    font-size: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.preview h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.25rem;
+}
+
+.preview h3 {
+    font-size: 1.25rem;
+}
+
+.preview h4 {
+    font-size: 1.125rem;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .preview {
+        padding: 0.75rem;
+    }
+    
+    .preview table {
+        font-size: 0.875rem;
+    }
+    
+    .preview th,
+    .preview td {
+        padding: 0.5rem;
+    }
+    
+    .preview pre {
+        font-size: 0.875rem;
+        padding: 0.75rem;
+    }
+}
+
+/* Loading animation */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #3b82f6;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Enhanced notification styles */
+.notification {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Focus improvements for accessibility */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* File upload area enhancement */
+input[type="file"] {
+    transition: all 0.2s ease;
+}
+
+input[type="file"]:hover {
+    background-color: #f8fafc;
+}
+
+/* Button hover effects */
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Enhanced form styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    .preview {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+    }
+    
+    .preview th {
+        background-color: #374151;
+    }
+    
+    .preview blockquote {
+        background-color: #374151;
+        border-left-color: #6b7280;
+        color: #d1d5db;
+    }
+}
