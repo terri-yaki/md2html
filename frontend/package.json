@@ -1,0 +1,22 @@
+{
+  "name": "md2html-frontend",
+  "version": "1.0.0",
+  "description": "MD2HTML Frontend for Cloudflare Pages",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "serve dist"
+  },
+  "dependencies": {
+    "marked": "^12.0.0",
+    "sanitize-html": "^2.12.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "serve": "^14.2.1"
+  },
+  "keywords": ["markdown", "html", "converter", "cloudflare", "pages"],
+  "author": "terri-yaki",
+  "license": "MIT"
+}

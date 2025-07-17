@@ -1,18 +1,15 @@
-# Cloudflare Workers configuration for MD2HTML
-# Enhanced by terriyaki for Cloudflare deployment
+# Cloudflare configuration for MD2HTML
+# Enhanced by terriyaki for production deployment
+# This file now references the new JavaScript-based API structure
 
-name = "md2html"
+# Note: This file is kept for reference. 
+# The actual Worker configuration is in api/wrangler.toml
+# Frontend deployment uses Cloudflare Pages build settings
+
+name = "md2html-legacy"
 compatibility_date = "2024-01-01"
-main = "main.py"
 
-[vars]
-FLASK_ENV = "production"
-
-# For Python Workers (if using Cloudflare Pages Functions)
-[[build.upload.rules]]
-type = "Text"
-globs = ["**/*.py", "**/*.html", "**/*.css", "**/*.js", "requirements.txt"]
-
-[[build.upload.rules]]
-type = "Data"
-globs = ["static/**/*", "templates/**/*"]
+# Legacy configuration - Flask version is preserved but not deployed
+# New deployments should use:
+# - api/wrangler.toml for Cloudflare Workers API
+# - frontend/ directory for Cloudflare Pages frontend
