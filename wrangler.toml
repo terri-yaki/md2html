@@ -1,0 +1,18 @@
+# Cloudflare Workers configuration for MD2HTML
+# Enhanced by terriyaki for Cloudflare deployment
+
+name = "md2html"
+compatibility_date = "2024-01-01"
+main = "main.py"
+
+[vars]
+FLASK_ENV = "production"
+
+# For Python Workers (if using Cloudflare Pages Functions)
+[[build.upload.rules]]
+type = "Text"
+globs = ["**/*.py", "**/*.html", "**/*.css", "**/*.js", "requirements.txt"]
+
+[[build.upload.rules]]
+type = "Data"
+globs = ["static/**/*", "templates/**/*"]

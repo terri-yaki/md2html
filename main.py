@@ -4,10 +4,43 @@ import os
 import uuid
 from asgiref.wsgi import WsgiToAsgi
 from flask_talisman import Talisman
+import bleach
 
 app = Flask(__name__, 
     static_folder='static',
     template_folder='templates'
+)
+
+# Security configuration - enhanced by terriyaki
+# Allow local development (HTTP) but enforce HTTPS in production
+import os
+force_https = os.environ.get('FLASK_ENV') != 'development'
+
+talisman = Talisman(
+    app,
+    force_https=force_https,
+    strict_transport_security=force_https,
+    strict_transport_security_max_age=31536000,  # 1 year
+    content_security_policy={
+        'default-src': "'self'",
+        'script-src': [
+            "'self'", 
+            "'unsafe-inline'",  # Required for inline scripts in templates
+            "https://cdn.jsdelivr.net"
+        ],
+        'style-src': [
+            "'self'", 
+            "'unsafe-inline'",  # Required for inline styles
+            "https://cdn.jsdelivr.net"
+        ],
+        'font-src': [
+            "'self'",
+            "https://cdn.jsdelivr.net"
+        ],
+        'img-src': "'self' data: https:",
+        'connect-src': "'self'",
+    },
+    content_security_policy_nonce_in=[]  # Disable nonces to allow unsafe-inline
 )
 
 # Create directories if they don't exist
@@ -139,12 +172,18 @@ def convert_markdown_to_html(
             'permalink': True
         }
 
-    # Math
-    if math_support and 'mdx_math' not in extensions:
-        extensions.append('mdx_math')
-        extension_configs['mdx_math'] = {
-            'enable_dollar_delimiter': True
-        }
+    # Math - with error handling by terriyaki
+    if math_support:
+        try:
+            import mdx_math
+            if 'mdx_math' not in extensions:
+                extensions.append('mdx_math')
+                extension_configs['mdx_math'] = {
+                    'enable_dollar_delimiter': True
+                }
+        except ImportError:
+            # Math extension not available, skip it
+            pass
 
     # Extra extensions
     if extra_extensions:
@@ -152,17 +191,49 @@ def convert_markdown_to_html(
             if ext not in extensions:
                 extensions.append(ext)
 
-    # Convert markdown to HTML
-    html_body = markdown.markdown(
-        markdown_text,
-        extensions=extensions,
-        extension_configs=extension_configs,
-        output_format='html5'
-    )
+    # Convert markdown to HTML with enhanced safety by terriyaki
+    try:
+        html_body = markdown.markdown(
+            markdown_text,
+            extensions=extensions,
+            extension_configs=extension_configs,
+            output_format='html5'
+        )
+        
+        # Enhanced security: sanitize the generated HTML
+        allowed_tags = [
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'code', 'pre',
+            'a', 'ul', 'ol', 'li', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'hr', 'del', 'ins', 'sub', 'sup', 'img', 'div', 'span', 'dl', 'dt', 'dd'
+        ]
+        allowed_attributes = {
+            'a': ['href', 'title'], 
+            'img': ['src', 'alt', 'title', 'width', 'height'],
+            'pre': ['class'], 
+            'code': ['class'],
+            'div': ['class'],
+            'span': ['class'],
+            'h1': ['id'], 'h2': ['id'], 'h3': ['id'], 'h4': ['id'], 'h5': ['id'], 'h6': ['id']
+        }
+        
+        clean_html = bleach.clean(
+            html_body, 
+            tags=allowed_tags, 
+            attributes=allowed_attributes,
+            strip=True
+        )
+        
+        # Additional security: make links safe
+        clean_html = bleach.linkify(clean_html, parse_email=False)
+        
+    except Exception as e:
+        # Fallback in case of conversion error
+        import html
+        clean_html = f"<p>Error converting markdown: {html.escape(str(e))}</p>"
 
     # If bare_output is True, just return the user’s raw HTML body
     if bare_output:
-        return html_body
+        return clean_html
 
     # Otherwise, proceed with your usual styling logic
     base_styles = """
@@ -251,10 +322,10 @@ def convert_markdown_to_html(
 
     if full_page:
         # Wrap in full HTML doc with styles
-        final_html = f"<!DOCTYPE html><html> ... {html_body} ...</html>"
+        final_html = f"<!DOCTYPE html><html> ... {clean_html} ...</html>"
     else:
         # Return a fragment with embedded <style>
-        final_html = f"<style>{base_styles}</style>\n{html_body}"
+        final_html = f"<style>{base_styles}</style>\n{clean_html}"
 
     return final_html
 
