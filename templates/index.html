@@ -52,13 +52,31 @@
 
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
             <div class="mb-4">
-                <h2 class="text-2xl font-semibold mb-2">Convert Markdown</h2>
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="w-full md:w-1/2">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                    <h2 class="text-2xl font-semibold mb-2 md:mb-0">Convert Markdown</h2>
+                    <!-- Enhanced controls by terriyaki -->
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm font-medium text-gray-700">View Mode:</label>
+                            <select id="view-mode" class="border border-gray-300 rounded px-2 py-1 text-sm">
+                                <option value="split">Split View</option>
+                                <option value="markdown">Markdown Only</option>
+                                <option value="preview">Preview Only</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="instant-preview" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" checked>
+                            <label for="instant-preview" class="ml-2 block text-sm text-gray-700">Instant Preview</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="editor-container" class="flex flex-col md:flex-row gap-4">
+                    <div id="markdown-panel" class="w-full md:w-1/2">
                         <label for="markdown-input" class="block text-sm font-medium text-gray-700 mb-1">Markdown Input</label>
                         <textarea id="markdown-input" class="w-full h-64 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter your Markdown here..."></textarea>
                     </div>
-                    <div class="w-full md:w-1/2">
+                    <div id="preview-panel" class="w-full md:w-1/2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">HTML Preview</label>
                         <iframe id="html-preview" class="preview h-64 overflow-auto w-full border" sandbox="allow-same-origin"></iframe>
                       </div>                      
@@ -176,9 +194,17 @@ Content-Type: application/json
             const fileHtmlPreview = document.getElementById('file-html-preview');
             const copyFileHtmlBtn = document.getElementById('copy-file-html-btn');
             const downloadHtmlBtn = document.getElementById('download-html-btn');
+            
+            // Enhanced controls by terriyaki
+            const viewModeSelect = document.getElementById('view-mode');
+            const instantPreviewToggle = document.getElementById('instant-preview');
+            const markdownPanel = document.getElementById('markdown-panel');
+            const previewPanel = document.getElementById('preview-panel');
+            const editorContainer = document.getElementById('editor-container');
 
             let currentHtml = '';
             let fileHtml = '';
+            let instantPreviewEnabled = true;
 
             // Convert markdown text to HTML
             async function convertMarkdown() {
@@ -389,7 +415,46 @@ Content-Type: application/json
 							}
 						}						
 
-            
+            // Enhanced view mode switching by terriyaki
+            function updateViewMode() {
+                const mode = viewModeSelect.value;
+                
+                // Reset classes
+                editorContainer.className = 'flex gap-4';
+                markdownPanel.className = 'w-full';
+                previewPanel.className = 'w-full';
+                
+                switch(mode) {
+                    case 'split':
+                        editorContainer.className = 'flex flex-col md:flex-row gap-4';
+                        markdownPanel.className = 'w-full md:w-1/2';
+                        previewPanel.className = 'w-full md:w-1/2';
+                        markdownPanel.style.display = 'block';
+                        previewPanel.style.display = 'block';
+                        break;
+                    case 'markdown':
+                        editorContainer.className = 'flex gap-4';
+                        markdownPanel.className = 'w-full';
+                        markdownPanel.style.display = 'block';
+                        previewPanel.style.display = 'none';
+                        break;
+                    case 'preview':
+                        editorContainer.className = 'flex gap-4';
+                        previewPanel.className = 'w-full';
+                        markdownPanel.style.display = 'none';
+                        previewPanel.style.display = 'block';
+                        break;
+                }
+            }
+
+            // Debounced conversion for instant preview
+            let debounceTimer;
+            function debouncedConvert() {
+                if (instantPreviewEnabled) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(convertMarkdown, 300); // Reduced from 500ms for more instant feel
+                }
+            }
 
             // Copy HTML to clipboard
             async function copyHtml(html) {
@@ -402,7 +467,7 @@ Content-Type: application/json
                 }
             }
 
-            // Event listeners
+            // Event listeners - enhanced by terriyaki
             convertBtn.addEventListener('click', convertMarkdown);
             
             copyHtmlBtn.addEventListener('click', () => {
@@ -415,16 +480,28 @@ Content-Type: application/json
 
             clearBtn.addEventListener('click', () => {
                 markdownInput.value = '';
-                htmlPreview.innerHTML = '<p class="text-gray-500">HTML preview will appear here...</p>';
+                if (htmlPreview.tagName.toLowerCase() === 'iframe') {
+                    htmlPreview.contentDocument.open();
+                    htmlPreview.contentDocument.write('<p class="text-gray-500">HTML preview will appear here...</p>');
+                    htmlPreview.contentDocument.close();
+                } else {
+                    htmlPreview.innerHTML = '<p class="text-gray-500">HTML preview will appear here...</p>';
+                }
                 currentHtml = '';
             });
 
-            // Auto-convert as you type (with debounce)
-            let debounceTimer;
-            markdownInput.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(convertMarkdown, 500);
+            // Enhanced controls event listeners
+            viewModeSelect.addEventListener('change', updateViewMode);
+            
+            instantPreviewToggle.addEventListener('change', (e) => {
+                instantPreviewEnabled = e.target.checked;
+                if (instantPreviewEnabled) {
+                    convertMarkdown(); // Convert immediately when enabled
+                }
             });
+
+            // Auto-convert as you type (with enhanced debounce)
+            markdownInput.addEventListener('input', debouncedConvert);
 
             // File upload form
             fileUploadForm.addEventListener('submit', async (e) => {
@@ -511,6 +588,8 @@ print("Hello, World!")
 
 > Try it out by editing this text or uploading your own Markdown file!
 `;
+            // Initialize enhanced features by terriyaki
+            updateViewMode();
             convertMarkdown();
         });
     </script>

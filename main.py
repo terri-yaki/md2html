@@ -40,7 +40,7 @@ talisman = Talisman(
         'img-src': "'self' data: https:",
         'connect-src': "'self'",
     },
-    content_security_policy_nonce_in=['script-src', 'style-src']
+    content_security_policy_nonce_in=[]  # Disable nonces to allow unsafe-inline
 )
 
 # Create directories if they don't exist
